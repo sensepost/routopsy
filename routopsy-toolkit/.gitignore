@@ -1,0 +1,10 @@
+*.pyc
+.idea/
+__pycache__/
+bin/
+include/
+lib/
+local/
+env/
+.vscode/
+scratch.py

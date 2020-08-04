@@ -1,0 +1,7 @@
+netifaces
+scapy
+netaddr
+docker
+python-iptables
+pyroute2
+colorama
