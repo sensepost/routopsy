@@ -1,0 +1,40 @@
+version: "3"
+services:
+    vrrp_master:
+        container_name: vrrp_master
+        image: osixia/keepalived
+        networks:
+            vrrp-network:
+                ipv4_address: 172.13.37.10
+        cap_add:
+            - NET_ADMIN
+            - NET_RAW
+            - NET_BROADCAST
+        volumes:
+            - ./master_vrrp.conf:/usr/local/etc/keepalived/keepalived.conf
+    vrrp_slave:
+        container_name: vrrp_slave
+        image: osixia/keepalived
+        networks: 
+            vrrp-network:
+                ipv4_address: 172.13.37.20
+        cap_add:
+            - NET_ADMIN
+            - NET_RAW
+            - NET_BROADCAST
+        volumes:
+            - ./slave_vrrp.conf:/usr/local/etc/keepalived/keepalived.conf
+    vrrp_victim:
+        container_name: vrrp_victim
+        image: praqma/network-multitool
+        networks: 
+            vrrp-network:
+                ipv4_address: 172.13.37.3
+        cap_add:
+            - NET_ADMIN
+networks:
+  vrrp-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.13.37.0/24

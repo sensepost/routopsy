@@ -1,0 +1,49 @@
+version: "3"
+services:
+
+          R1:
+              container_name: R1
+              image: frrouting/frr
+              networks:
+                  net-1:
+                      ipv4_address: 172.28.0.10
+                  net-2:
+                      ipv4_address: 172.29.0.10
+              cap_add:
+                  - NET_ADMIN
+                  - NET_RAW
+                  - SYS_ADMIN
+              volumes:
+                  - ./frr_configs/daemons:/etc/frr/daemons
+                  - ./frr_configs/R1/R1_zebra.conf:/etc/frr/zebra.conf
+                  - ./frr_configs/R1/R1_ospfd.conf:/etc/frr/ospfd.conf
+                  - ./frr_configs/R1/R1_eigrpd.conf:/etc/frr/eigrpd.conf
+                  - ./frr_configs/R1/R1_ripd.conf:/etc/frr/ripd.conf
+          VICTIM:
+              depends_on: 
+                - R1
+              container_name: VICTIM
+              image: praqma/network-multitool
+              network_mode: service:R1
+              cap_add:
+                  - NET_ADMIN
+                  - NET_BROADCAST
+                  - NET_RAW
+          SSHD_CHEAT:
+              depends_on:
+                - R1
+              container_name: SSHD_CHEAT
+              image: rastasheep/ubuntu-sshd:14.04
+              network_mode: service:R1
+
+networks:
+  net-1:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+  net-2:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.0.0/16
