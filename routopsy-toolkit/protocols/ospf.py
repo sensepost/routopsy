@@ -79,6 +79,7 @@ def build_configurations(packet):
     ospfd_config += ' ip ospf dead-interval {}\n'.format(packet.dead_interval)
 
     if user_var.password:
+        ospfd_config += ' ip ospf authentication message-digest\n'
         ospfd_config += ' ip ospf message-digest-key 1 md5 {}\n'.format(user_var.password)
     elif packet.authtype == 1:
         ospfd_config += ' ip ospf authentication-key {}\n'.format(packet.authdata)
@@ -90,6 +91,11 @@ def build_configurations(packet):
     if user_var.inject_local or user_var.redirect_local:
         ospfd_config += ' network 172.17.0.0/16 area {}\n'.format(packet.area_id)
 
+
+    if user_var.password:
+        ospfd_config += ' area {} authentication message-digest\n'.format(packet.area_id)
+    elif packet.authtype == 1:
+        ospfd_config += ' area {} authentication\n'.format(packet.area_id)
 
     staticd_config = ''
     pbrd_config = ''
