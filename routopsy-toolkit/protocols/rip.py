@@ -55,7 +55,7 @@ def build_configurations(packet):
     ripd_config += ' network {}/32\n'.format(utility.get_ip_address_from_interface(user_var.interface))
 
     if user_var.inject_local or user_var.redirect_local:
-        ripd_config += ' network 172.17.0.0/16 area {}\n'.format(packet.area_id)
+        ripd_config += ' network 172.17.0.0/16\n'
 
     ripd_config += ' version {}\n'.format(packet.version)
 
