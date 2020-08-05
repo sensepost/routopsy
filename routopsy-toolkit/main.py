@@ -35,41 +35,45 @@ def main():
 
     if user_var.clean:
         docker_wrapper.stop_and_remove_containers()
-        if user_var.redirect:
-            utility.iptablesFILTER("del", user_var)
-            utility.iptablesDNAT("del", user_var)
-            utility.iptablesSNAT("del", user_var)
-            # if user_var.inject:
-            #     utility.deleteRoutes(redirect)
-        else:
-            utility.iptablesFILTER("del", user_var)
-            utility.iptablesSNAT("del", user_var)
-            # utility.deleteRoutes(ipaddresses)
+        if 'vrrp' in user_var.protocol:
+            pass
 
-        # FIXME THIS IS A BAD WAY TO DO IT
-        # netwithcidr, gateway = utility.getMainTableIPV4Routes()
+        if 'ospf' in user_var.protocol or 'rip' in user_var.protocol or 'eigrp' in user_var.protocol:
+            if user_var.redirect:
+                utility.iptablesFILTER("del", user_var)
+                utility.iptablesDNAT("del", user_var)
+                utility.iptablesSNAT("del", user_var)
+                # if user_var.inject:
+                #     utility.deleteRoutes(redirect)
+            else:
+                utility.iptablesFILTER("del", user_var)
+                utility.iptablesSNAT("del", user_var)
+                # utility.deleteRoutes(ipaddresses)
 
-        # cidr2, gateway2 = utility.getMainTableIPV4Routes()
+            # FIXME THIS IS A BAD WAY TO DO IT
+            # netwithcidr, gateway = utility.getMainTableIPV4Routes()
 
-        # list_of_differences = utility.compare_routing_tables(cidr, gateway, cidr2, gateway2)
-        # utility.editRoutes(netwithcidr, gateway, "delete")
+            # cidr2, gateway2 = utility.getMainTableIPV4Routes()
 
-        # FIXME Put this stuff in /dev/shm or /tmp
-        original_cidr_list = pickle.load(open('{}/cidr.p'.format(user_var.path), 'rb'))
-        original_gateway_list = pickle.load(open('{}/gws.p'.format(user_var.path), 'rb'))
-        current_cidr_list, current_gateway_list = utility.getMainTableIPV4Routes()
+            # list_of_differences = utility.compare_routing_tables(cidr, gateway, cidr2, gateway2)
+            # utility.editRoutes(netwithcidr, gateway, "delete")
 
-        list_of_differences = utility.compare_routing_tables(original_cidr_list, original_gateway_list, \
-                                                             current_cidr_list, current_gateway_list)
+            # FIXME Put this stuff in /dev/shm or /tmp
+            original_cidr_list = pickle.load(open('{}/cidr.p'.format(user_var.path), 'rb'))
+            original_gateway_list = pickle.load(open('{}/gws.p'.format(user_var.path), 'rb'))
+            current_cidr_list, current_gateway_list = utility.getMainTableIPV4Routes()
 
-        cidr_differences = []
-        gateway_differences = []
+            list_of_differences = utility.compare_routing_tables(original_cidr_list, original_gateway_list, \
+                                                                current_cidr_list, current_gateway_list)
 
-        for x in list_of_differences[1]:
-            cidr_differences.append(x[0])
-            gateway_differences.append(x[1])
+            cidr_differences = []
+            gateway_differences = []
 
-        utility.editRoutes(cidr_differences, gateway_differences, "delete")
+            for x in list_of_differences[1]:
+                cidr_differences.append(x[0])
+                gateway_differences.append(x[1])
+
+            utility.editRoutes(cidr_differences, gateway_differences, "delete")
 
     elif user_var.scan:
         print(Fore.YELLOW + Style.BRIGHT + '[-]Performing a scan on the following protocols: {}'.format(user_var.protocol))
