@@ -27,6 +27,7 @@ class routing_table:
 #default gateway set before performing an HSRP attack
 
 routing_table = routing_table()
+hsrp_config = hsrp_config()
 user_var = user_var()
 vulnerable_ospf_packets = []
 vulnerable_eigrp_packets = []
