@@ -17,8 +17,9 @@ class Data:
         self.inject_local = False
         self.clean = None
         self.attack_count = None
+        self.password = None
 
-    def set_data(self,interface,count,inject,ipaddress,scan,attack,protocol,path, target, redirect, redirectaddresses, clean, attack_count, inject_local, inject_local_ip_addresses, redirect_local, redirect_local_ip_addresses):
+    def set_data(self, interface, count, inject, ipaddress, scan, attack, protocol, path, target, redirect, redirectaddresses, clean, attack_count, inject_local, inject_local_ip_addresses, redirect_local, redirect_local_ip_addresses, password):
         self.interface = interface
         self.count = count
         self.inject = inject
@@ -36,3 +37,4 @@ class Data:
         self.redirect_local_ip_addresses = redirect_local_ip_addresses
         self.redirect_local = redirect_local
         self.inject_local = inject_local
+        self.password = password
