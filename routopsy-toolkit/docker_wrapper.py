@@ -1,9 +1,6 @@
 import docker
 import protocols.vrrp as vrrp
 from state import user_var
-from state import ospf_packet
-from state import eigrp_packet
-from state import rip_packet
 
 from state import vulnerable_eigrp_packets
 from state import vulnerable_hsrp_packets
