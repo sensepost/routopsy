@@ -35,7 +35,7 @@ def detect_if_vulnerable(packet):
         # - mask            [9]
         return True
 
-    if packet[OSPF_Hdr].type == 1 and packet[OSPF_Hdr].authtype == 1:
+    elif packet[OSPF_Hdr].type == 1 and packet[OSPF_Hdr].authtype == 1:
         return True
 
     elif packet[OSPF_Hdr].authtype == 2:
