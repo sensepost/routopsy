@@ -152,6 +152,21 @@ def main():
                     writer = open('{}/{}_pbrd.conf'.format(user_var.path, v_packet.source_ip), 'w')
                     writer.write(pbrd_config)
                     writer.close()
+
+                                        # FIXME
+                    # Code for demo, to come back to this and give it a proper cleaning
+                    if user_var.redirect_local or user_var.inject_local:
+                        ripd_peer_config, staticd_peer_config = rip.build_peer_configuration(v_packet)
+                        writer = open('{}/{}_peer_ripd.conf'.format(user_var.path, v_packet.source_ip), 'w')
+                        writer.write(ripd_peer_config)
+                        writer.close()
+                        writer = open('{}/{}_peer_staticd.conf'.format(user_var.path, v_packet.source_ip), 'w')
+                        writer.write(staticd_peer_config)
+                        writer.close()
+                        zebrad_config = rip.build_peer_zebra_configuration()
+                        writer = open('{}/{}_zebra.conf'.format(user_var.path, v_packet.source_ip), 'w')
+                        writer.write(zebrad_config)
+                        writer.close()
                     
                     print(Fore.CYAN + Style.BRIGHT + '[+]Created RIP configurations for {} in {}'.format(v_packet.source_ip, user_var.path))
 
