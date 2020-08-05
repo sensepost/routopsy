@@ -155,7 +155,7 @@ def build_peer_configuration(packet):
 
     ripd_config = '!\n'
     ripd_config += 'router rip\n'
-    ripd_config += ' network {}/32\n'.format(utility.get_ip_address_from_interface(user_var.interface))
+    ripd_config += ' network 0.0.0.0/0\n'
     ripd_config += ' version {}\n'.format(packet.version)
 
     staticd_config = ''
