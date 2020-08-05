@@ -358,9 +358,6 @@ if __name__== "__main__":
             validate = False
             print('IP addresses to PitM should be valid and in CIDR notation, eg. 10.20.30.3/24')
 
-    if args.password:
-        print('Got a password')
-
     if not args.protocol:
         protocols = utility.protocols
     else:

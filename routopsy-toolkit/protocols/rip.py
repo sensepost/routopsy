@@ -53,6 +53,10 @@ def build_configurations(packet):
     ripd_config += '!\n'
     ripd_config += 'router rip\n'
     ripd_config += ' network {}/32\n'.format(utility.get_ip_address_from_interface(user_var.interface))
+
+    if user_var.inject_local or user_var.redirect_local:
+        ripd_config += ' network 172.17.0.0/16 area {}\n'.format(packet.area_id)
+
     ripd_config += ' version {}\n'.format(packet.version)
 
     staticd_config = ''
@@ -110,3 +114,66 @@ def build_configurations(packet):
     #elif packet.authentication_type ==  3:
 
     return ripd_config, staticd_config, pbrd_config
+
+def build_peer_zebra_configuration():
+    zebrad_config = ''
+
+    count = 0
+
+    counts = []
+
+    if user_var.inject_local or user_var.redirect_local:
+
+        zebrad_config += '!\n'
+
+        for ip in user_var.inject_local_ip_addresses:
+            count += 1
+            zebrad_config += 'access-list {}0 seq 1 permit {}\n'.format(count, ip)
+            counts.append(count)
+
+        for ip in user_var.redirect_local_ip_addresses:
+            count += 1
+            zebrad_config += 'access-list {}0 seq 1 permit {}\n'.format(count, ip)
+            counts.append(count)
+
+        zebrad_config += 'access-list {}0 seq 1 permit any\n'.format(count + 1)
+        zebrad_config += '!\n'
+        zebrad_config += 'route-map rmap deny 1\n'
+        
+        for c in counts:
+            zebrad_config += ' match ip address {}0\n'.format(c)
+        zebrad_config += '!\n'
+        zebrad_config += 'route-map rmap permit 2\n'
+        zebrad_config += ' match ip address {}0\n'.format(count + 1)
+        zebrad_config += '!\n'
+        zebrad_config += 'ip protocol rip route-map rmap\n'
+
+    zebrad_config += '!\n'
+    return zebrad_config
+
+def build_peer_configuration(packet):
+
+    ripd_config = '!\n'
+    ripd_config += 'router rip\n'
+    ripd_config += ' network {}/32\n'.format(utility.get_ip_address_from_interface(user_var.interface))
+    ripd_config += ' version {}\n'.format(packet.version)
+
+    staticd_config = ''
+
+    if user_var.inject_local or user_var.redirect_local:
+
+        ripd_config += ' redistribute static metric 0\n'
+
+        staticd_config += '!\n'
+
+        for ip in user_var.inject_local_ip_addresses:
+            staticd_config += 'ip route {} Null0\n'.format(ip)
+
+        for ip in user_var.redirect_local_ip_addresses:
+            staticd_config += 'ip route {} Null0\n'.format(ip)
+
+    ripd_config += '!\n'
+    staticd_config += '!\n'
+
+
+    return ripd_config, staticd_config
