@@ -1,8 +1,4 @@
-from ospf import OSPF as ospf_packet
 from data import Data as user_var
-from eigrp import EIGRP as eigrp_packet
-from rip import RIP as rip_packet
-
 
 # HSRP Configuration/State
 
@@ -31,11 +27,7 @@ class routing_table:
 #default gateway set before performing an HSRP attack
 
 routing_table = routing_table()
-hsrp_config = hsrp_config()
-ospf_packet = ospf_packet()
 user_var = user_var()
-eigrp_packet = eigrp_packet()
-rip_packet = rip_packet()
 vulnerable_ospf_packets = []
 vulnerable_eigrp_packets = []
 vulnerable_rip_packets = []
