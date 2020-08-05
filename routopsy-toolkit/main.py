@@ -2,7 +2,6 @@ import argparse
 import ipaddress
 import netifaces
 import vuln_scanner
-import config_builder
 import socket
 import docker_wrapper
 import os
@@ -263,6 +262,7 @@ if __name__== "__main__":
     parser.add_argument('--scan', required=False, action='store_true', help='Specify whether to perform a scan.')
     parser.add_argument('--attack', required=False, action='store_true', help='Specify whether to perform an attack.')
     parser.add_argument('--protocol', required=False, nargs='*', choices=utility.protocols, help="Specify the protocol.")
+    parser.add_argument('--password', required=False, help='Specify the password to setup crypto auth between the protocols.')
     parser.add_argument('--path', required=False, help='Specify the location where config files are stored and read from.', default='/tmp/config')
 
     args = parser.parse_args()
@@ -354,6 +354,8 @@ if __name__== "__main__":
             validate = False
             print('IP addresses to PitM should be valid and in CIDR notation, eg. 10.20.30.3/24')
 
+    if args.password:
+        print('Got a password')
 
     if not args.protocol:
         protocols = utility.protocols
@@ -362,6 +364,6 @@ if __name__== "__main__":
             protocols.append(protocol)
 
     if validate:
-        user_var.set_data(args.interface,int(args.count),inject_ips,inject_ip_addresses,args.scan,args.attack,protocols,args.path,args.target,redirect_ips,redirect_ip_addresses,args.clean, int(args.attack_count), inject_local_ips, inject_local_ip_addresses, redirect_local_ips, redirect_local_ip_addresses)
+        user_var.set_data(args.interface, int(args.count), inject_ips, inject_ip_addresses, args.scan, args.attack, protocols, args.path, args.target, redirect_ips, redirect_ip_addresses, args.clean, int(args.attack_count), inject_local_ips, inject_local_ip_addresses, redirect_local_ips, redirect_local_ip_addresses, args.password)
         main()
 
