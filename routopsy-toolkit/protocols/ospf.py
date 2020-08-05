@@ -58,7 +58,7 @@ def get_data_from_ospf_header(packet):
     authdata = None
 
     if authtype == 1:
-        authdata = hex(packet['OSPF Header'].authdata)[2:1]
+        authdata = hex(packet['OSPF Header'].authdata)[2:]
         authdata = bytes.fromhex(authdata)
         authdata = authdata.decode("ASCII").rstrip('\x00')
 
