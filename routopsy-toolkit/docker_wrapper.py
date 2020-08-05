@@ -86,8 +86,15 @@ def build_and_run_peer_container():
 
     volumes = {'{}/daemons'.format(user_var.path):{'bind': '/etc/frr/daemons', 'mode': 'rw'}}
 
-    ospf_volume = {'{}/{}_peer_ospfd.conf'.format(user_var.path, user_var.target):{'bind': '/etc/frr/ospfd.conf', 'mode': 'rw'}}
-    volumes.update(ospf_volume)
+    volume = None
+
+    if 'ospf' in user_var.protocol:
+        volume = {'{}/{}_peer_ospfd.conf'.format(user_var.path, user_var.target):{'bind': '/etc/frr/ospfd.conf', 'mode': 'rw'}}
+        volumes.update(volume)
+
+    if 'rip' in user_var.protocol:
+        volume = {'{}/{}_peer_ripd.conf'.format(user_var.path, user_var.target):{'bind': '/etc/frr/ospfd.conf', 'mode': 'rw'}}
+        volumes.update(volume)
 
     if user_var.inject_local or user_var.redirect_local:
         volumes.update({'{}/{}_peer_staticd.conf'.format(user_var.path, user_var.target):{'bind': '/etc/frr/staticd.conf', 'mode': 'rw'}})
