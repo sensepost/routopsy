@@ -162,7 +162,7 @@ def build_peer_configuration(packet):
 
     if user_var.inject_local or user_var.redirect_local:
 
-        ripd_config += ' redistribute static metric 0\n'
+        ripd_config += ' redistribute static\n'
 
         staticd_config += '!\n'
 
