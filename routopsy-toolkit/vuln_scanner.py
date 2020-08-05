@@ -7,9 +7,6 @@ from scapy.contrib.ospf import OSPF_Hdr, OSPF_Hello, OSPF_LLS_Hdr, OSPF_DBDesc, 
 load_contrib('ospf')
 
 import protocol_parser
-from state import ospf_packet
-from state import eigrp_packet
-from state import rip_packet
 from state import user_var
 from state import vulnerable_eigrp_packets
 from state import vulnerable_hsrp_packets
