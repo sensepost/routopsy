@@ -58,8 +58,9 @@ def get_data_from_ospf_header(packet):
     authdata = None
 
     if authtype == 1:
-        authdata = packet['OSPF Header'].authdata.decode('UTF-8').rstrip('\x00')
-
+        authdata = hex(packet['OSPF Header'].authdata)[2:1]
+        authdata = bytes.fromhex(authdata)
+        authdata = authdata.decode("ASCII").rstrip('\x00')
 
     return areaId, authtype, authdata
 
