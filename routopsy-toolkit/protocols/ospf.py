@@ -34,7 +34,8 @@ def detect_if_vulnerable(packet):
         # - backup          [8]
         # - mask            [9]
         return True
-    elif packet[OSPF_Hdr].type == 1 and packet[OSPF_Hdr].authtype == 2:
+
+    elif packet[OSPF_Hdr].authtype == 2:
 
         # TODO put this somewhere more sensible
 
@@ -50,18 +51,25 @@ def detect_if_vulnerable(packet):
 
 def get_data_from_ospf_header(packet):
     areaId = packet['OSPF Header'].area
-    return areaId
+    authtype = packet['OSPF Header'].authtype
+    authdata = None
+
+    if authtype == 1:
+        authdata = packet['OSPF Header'].authdata
+
+
+    return areaId, authtype, authdata
 
 def get_packet_data(packet):
     sourceMac, sourceIP, destinationMac, destinationIP = protocol_parser.get_data_from_layer_two_and_three(packet)
-    areaId = get_data_from_ospf_header(packet)
+    areaId, authtype, authdata = get_data_from_ospf_header(packet)
     helloInterval = packet['OSPF Hello'].hellointerval
     deadInterval = packet['OSPF Hello'].deadinterval
     router = packet['OSPF Hello'].router
     backup = packet['OSPF Hello'].backup
     mask = packet['OSPF Hello'].mask
 
-    return sourceMac, sourceIP, destinationMac, destinationIP, areaId, helloInterval, deadInterval, router, backup, mask
+    return sourceMac, sourceIP, destinationMac, destinationIP, areaId, helloInterval, deadInterval, router, backup, mask, authtype, authdata
 
 def build_configurations(packet):
 
@@ -69,6 +77,12 @@ def build_configurations(packet):
     ospfd_config += 'interface {}\n'.format(user_var.interface)
     ospfd_config += ' ip ospf hello-interval {}\n'.format(packet.hello_interval)
     ospfd_config += ' ip ospf dead-interval {}\n'.format(packet.dead_interval)
+
+    if user_var.password:
+        ospfd_config += ' ip ospf message-digest-key 1 md5 {}\n'.format(user_var.password)
+    elif packet.authtype == 1:
+        ospfd_config += ' ip ospf authentication-key {}\n'.format(packet.authdata)
+
     ospfd_config += '!\n'
     ospfd_config += 'router ospf\n'
     ospfd_config += ' network {}/32 area {}\n'.format(utility.get_ip_address_from_interface(user_var.interface),  packet.area_id)
