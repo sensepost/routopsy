@@ -97,7 +97,10 @@ def start_scan():
 
     for v_packet in vulnerable_ospf_packets:
         vulnerable = True
-        print(Fore.CYAN + Style.BRIGHT + '[+]Detected a vulnerable OSPF configuration for {}'.format(v_packet.source_ip))
+        if v_packet.authtype == 2:
+            print(Fore.CYAN + Style.BRIGHT + '[+]Detected a vulnerable OSPF configuration for {} but crypto authentication is being used'.format(v_packet.source_ip))
+        else:
+            print(Fore.CYAN + Style.BRIGHT + '[+]Detected a vulnerable OSPF configuration for {}'.format(v_packet.source_ip))
 
     for v_packet in vulnerable_rip_packets:
         vulnerable = True
