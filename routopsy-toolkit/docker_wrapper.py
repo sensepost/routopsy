@@ -20,7 +20,7 @@ colorama.init(autoreset=True)
 
 def stop_and_remove_containers():
     for container in client.containers.list(all=True):
-        if 'routopsy-' in container.name:
+        if 'routopsy-frr' in container.name:
             container.stop()
             container.remove()
 
