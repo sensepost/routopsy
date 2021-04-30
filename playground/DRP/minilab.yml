@@ -3,7 +3,7 @@ services:
 
           R1:
               container_name: R1
-              image: frrouting/frr
+              image: frrouting/frr:v7.4.0
               networks:
                   net-1:
                       ipv4_address: 172.28.0.10
