@@ -5,3 +5,6 @@ docker
 python-iptables
 pyroute2
 colorama
+python-iptables
+pyroute2
+docker
