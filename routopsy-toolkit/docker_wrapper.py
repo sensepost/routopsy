@@ -70,7 +70,7 @@ def build_and_run_container():
     if user_var.inject_local or user_var.redirect_local:
         volumes.update({'{}/{}_zebra.conf'.format(user_var.path, user_var.target):{'bind': '/etc/frr/zebra.conf', 'mode': 'rw'}})
 
-    container = client.containers.run('frrouting/frr', name=docker_name, cap_add=\
+    container = client.containers.run('frrouting/frr:v7.5.1', name=docker_name, cap_add=\
     ['NET_ADMIN', 'NET_RAW', 'SYS_ADMIN'], detach=True, network='host',\
                           volumes=volumes)
     
@@ -99,7 +99,7 @@ def build_and_run_peer_container():
     if user_var.inject_local or user_var.redirect_local:
         volumes.update({'{}/{}_peer_staticd.conf'.format(user_var.path, user_var.target):{'bind': '/etc/frr/staticd.conf', 'mode': 'rw'}})
 
-    container = client.containers.run('frrouting/frr', name=docker_name, cap_add=\
+    container = client.containers.run('frrouting/frr:v7.5.1', name=docker_name, cap_add=\
     ['NET_ADMIN', 'NET_RAW', 'SYS_ADMIN'], detach=True, volumes=volumes)
     
     if 'running' in client.containers.get(docker_name).status:
